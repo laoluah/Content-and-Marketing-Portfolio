@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pitch: a CRA reporting runbook for the engineer who gets paged</title>
+<style>
+*{box-sizing:border-box}
+body{ margin:0; background:#fff; color:#1a1a1a;
+  font-family:-apple-system,"Segoe UI","Carlito",Calibri,sans-serif;
+  font-size:17px; line-height:1.6; }
+.wrap{ max-width:40rem; margin:0 auto; padding:3.5rem 1.5rem 5rem; }
+h1{ font-size:1.75rem; line-height:1.3; margin:0 0 .35rem; font-weight:700; }
+.meta{ font-size:.9rem; color:#5b6270; margin:0 0 1.75rem; padding-bottom:1rem; border-bottom:1px solid #e2e5ea; }
+h2{ font-size:1.05rem; margin:2rem 0 .5rem; font-weight:700; color:#1F3864; }
+p{ margin:0 0 .9rem; }
+blockquote{ margin:1rem 0; padding:0 0 0 1rem; border-left:3px solid #1F3864; color:#33383f; }
+blockquote p{ margin:0 0 .6rem; }
+a{ color:#1F3864; }
+@media (max-width:600px){ body{font-size:16px} .wrap{padding:2rem 1.1rem 3rem} h1{font-size:1.45rem} }
+</style></head>
+<body><article class="wrap"><h1>Pitch: a CRA reporting runbook for the engineer who gets paged</h1>
+<div class="meta">Laolu Awogbade, 2 August 2026</div>
+
+<h2>The idea</h2>
+<p>On 11 September the Cyber Resilience Act's reporting clocks go live. Twenty-four hours to send an early warning, seventy-two to file a full notification, fourteen days to a complete report once a fix exists. Every AppSec vendor has now published something explaining what the CRA is. Nobody has written the procedure for the person who actually gets paged. That is the piece.</p>
+<h2>Why it has to run soon</h2>
+<p>Six weeks to the deadline is the obvious answer. The better one is that the Commission adopted its practical guidance on 27 July, six days ago, as C(2026) 5252. It settles a scope question engineering teams have been arguing about in public for over a year, and as far as I can find nobody has yet covered it from an engineering angle rather than a legal one. That window is open now and it will not be open in a fortnight.</p>
+<h2>Where it came from</h2>
+<p>I went looking for what people were stuck on rather than what vendors were publishing.</p>
+<p>On r/cybersecurity in December, someone asked whether the CRA requires an SBOM for web apps, on the basis that their offering "resembles a SaaS product" and pure SaaS is excluded. The thread told them to generate SBOMs anyway. Reasonable advice. Not a reply to the question.</p>
+<p>In February on r/webdev, a team running B2B SaaS on Next.js wanted to know whether to produce one SBOM for the monorepo or split it front end and back end. The replies pointed at ISO 27001 and told them to ask their CISO. An organisational answer to an engineering question.</p>
+<p>Then I read what the vendors had shipped. Snyk has explainers and a compliance cheat sheet. Endor Labs has a good essay on how the Regulation rewrites software liability. Ox Security published what I think is the best AppSec-framed overview of the CRA, NIS2 and DORA landscape anyone has managed. I could not find first-party CRA content from Wiz or Semgrep at all. Aikido's own CRA post is from September last year.</p>
+<p>So the pattern is consistent. Everyone has explained the regulation. Nobody has operationalised it.</p>
+<h2>The argument</h2>
+<p>Received wisdom says pure SaaS is excluded, so anything delivered through a browser can relax. The guidance runs the other way, and the order of operations is where teams go wrong.</p>
+<p>Remote data processing does not drag a service into scope on its own. It extends the boundary of a product that already exists. So the first question is whether you ship anything onto a user's system at all. A desktop build, a CLI, an installed agent, a browser extension: that artefact is the product, and the manufacturer's own back end performing its functions comes with it. Which makes a thin client the opposite of a safe harbour, because an authentication service issuing tokens the client needs is squarely in scope.</p>
+<p>The corollary is the more useful half. Third-party SaaS that a customer integrates is not that customer's remote data processing solution, because it was not built under their responsibility. It is a component: risk-assessed and diligenced, not filed on. "Generate the SBOM anyway" turns out to have been right for the wrong reason.</p>
+<p>I read that out of the guidance directly rather than from anyone's summary of it. I did a law postgrad before I moved into content, so close reading of a Regulation is the part of this I am most confident about, and it is the part almost no security writer wants to do.</p>
+<h2>How I would open it</h2>
+<blockquote>
+<p>Your on-call engineer gets paged. A library you ship, somewhere in the dependency tree of a product you sell into the EU, has an actively exploited vulnerability. Not exploitable in principle. Actively exploited, right now.</p>
+<p>From that moment a clock starts. Twenty-four hours to warn, seventy-two to notify, fourteen days to a complete report once a fix exists. The maximum fine under Article 64 is fifteen million euros or 2.5% of global turnover, whichever is higher.</p>
+<p>Most engineering organisations caught by this have a slide deck about the CRA. Very few have rehearsed it once. The gap between those two things is what this piece is about, and there are six weeks left to close it.</p>
+</blockquote>
+<h2>The shape of it</h2>
+<p>Six sections, around 1,800 words. The 3 a.m. scenario. The three clocks and why CRA reporting is not NIS2 reporting and not DORA reporting. The scope question the Commission just answered, run against those two real Reddit threads. What the Single Reporting Platform actually wants at hour twenty-four, including the awareness trigger, which is narrower than teams assume. A six-step runbook. A six-week sprint to be ready.</p>
+<p>Everything sourced to the Regulation, the guidance, or ENISA, with the reader-facing claims tied to something they can click.</p>
+<h2>What else is in the notebook</h2>
+<p>This is not a one-off. There is a regulation beat here that nobody at any of your competitors is staffing properly, and three more pieces I would want to write:</p>
+<p><strong>DORA from the vendor side.</strong> Everybody writes DORA for banks. Nobody writes what a software vendor selling into a bank actually has to hand over when the bank's own compliance team comes asking. Ox and your own DORA post brush against it. No one owns it.</p>
+<p><strong>The UK dual regime.</strong> The Cyber Security and Resilience Bill against the CRA, for UK companies exporting into the EU. Barely a content category yet, and a UK-based writer is the obvious person to build it.</p>
+<p><strong>An SBOM quality audit.</strong> ENISA's 2026 survey found a large gap between organisations generating SBOMs and organisations using them, which you editorialised on in June. The follow-up is data rather than commentary: sample a few hundred public repos that claim SBOM generation, pull the release artefacts, and check what proportion actually parse and carry usable package identifiers. I can write the collection script for that. It would be original, it would be citable, and I have not seen anyone do it.</p>
+<h2>One note on this document</h2>
+<p>I drafted the CRA piece out to about three thousand words before writing this, because I wanted to know whether the argument survived contact with the guidance before I pitched it. It does. I would rather show you the thinking than send you a finished article you did not commission, but the full draft exists and I can send it today.</p></article></body></html>
